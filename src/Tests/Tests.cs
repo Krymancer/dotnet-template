@@ -1,5 +1,3 @@
-using FluentAssertions;
-
 namespace Tests;
 
 public class Tests
