@@ -6,6 +6,16 @@ services:
     environment:
       - DOCKER_CLI_ACI=1
 
+  database:
+    image: postgres
+    hostname: db
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_MULTIPLE_DATABASES: dotnet-template, dotnet-template-identity
+    ports:
+      - 5432:5432
+
   dotnet-template.api:
     image: ${DOCKER_REGISTRY-}dotnet-template-api
     build:
