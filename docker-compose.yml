@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  docker-login:
+    image: alpine:latest
+    environment:
+      - DOCKER_CLI_ACI=1
+
+  dotnet-template.api:
+    image: ${DOCKER_REGISTRY-}dotnet-template-api
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - docker-login
+
+  dotnet-template.mvc:
+    image: ${DOCKER_REGISTRY-}dotnet-template-mvc
+    build:
+      context: .
+      dockerfile: src/Mvc/Dockerfile
+    ports:
+      - "5001:80"
+    depends_on:
+      - docker-login
+      - dotnet-template.api
