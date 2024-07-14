@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   docker-login:
     image: alpine:latest
@@ -10,29 +8,9 @@ services:
     image: postgres
     hostname: db
     environment:
+      DB_PORT: 5432
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
-      POSTGRES_MULTIPLE_DATABASES: dotnet-template, dotnet-template-identity
+      DB_NAME: dotnet-template
     ports:
       - 5432:5432
-
-  dotnet-template.api:
-    image: ${DOCKER_REGISTRY-}dotnet-template-api
-    build:
-      context: .
-      dockerfile: src/Api/Dockerfile
-    ports:
-      - "5000:80"
-    depends_on:
-      - docker-login
-
-  dotnet-template.mvc:
-    image: ${DOCKER_REGISTRY-}dotnet-template-mvc
-    build:
-      context: .
-      dockerfile: src/Mvc/Dockerfile
-    ports:
-      - "5001:80"
-    depends_on:
-      - docker-login
-      - dotnet-template.api

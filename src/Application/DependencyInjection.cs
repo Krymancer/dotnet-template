@@ -1,41 +1,25 @@
-﻿using System.Globalization;
-using System.Reflection;
-using Application.Behaviours;
-using Application.Middleware.Localization;
-using FluentValidation;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using Application.Common.Behaviours;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 
 namespace Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddMediatR(options =>
-        {
-            options.RegisterServicesFromAssemblyContaining(typeof(DependencyInjection));
-        });
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationJwtBehaviour<,>));
-        services.AddDistributedMemoryCache();
-        services.AddLocalization();
-        services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
-        services.Configure<RequestLocalizationOptions>(options =>
+
+        services.AddMediatR(cfg =>
         {
-            var supportedCultures = new[]
-            {
-                new CultureInfo("en-US"),
-                new CultureInfo("pt-BR")
-            };
-            options.SupportedCultures = supportedCultures;
-            options.SupportedUICultures = supportedCultures;
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
         });
 
         return services;
