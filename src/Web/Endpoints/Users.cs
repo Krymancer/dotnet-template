@@ -1,14 +1,14 @@
-﻿#if (UseApiOnly)
-using CleanArchitecture.Infrastructure.Identity;
+﻿using Infrastructure.Identity;
+using Web.Infrastructure;
 
-namespace CleanArchitecture.Web.Endpoints;
+namespace Web.Endpoints;
 
 public class Users : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapIdentityApi<ApplicationUser>();
+            .MapIdentityApi<ApplicationUser>()
+            .AllowAnonymous();
     }
 }
-#endif

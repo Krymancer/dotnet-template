@@ -1,6 +1,7 @@
 using Application;
 using Infrastructure;
 using Infrastructure.Data;
+using Scalar.AspNetCore;
 using Web;
 using Web.Infrastructure;
 
@@ -21,13 +22,12 @@ else
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseOpenApi();
+app.UseSwaggerUi();
 
 app.MapControllerRoute(
     "default",
